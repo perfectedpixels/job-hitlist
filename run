@@ -1,0 +1,21 @@
+#!/bin/sh
+# Run any script in this folder against the venv that has pyyaml and pypdf.
+#
+#   ./run build_userscript.py
+#   ./run make_work_history.py
+#   ./run descriptions_from_pdf.py tailored.pdf --write
+#
+# Homebrew's Python refuses pip installs (PEP 668), so the dependencies live in
+# ~/.venvs/applications rather than system-wide. The venv is deliberately OUTSIDE
+# Dropbox -- it is thousands of small files and would sync forever.
+#
+# To rebuild it if it ever goes missing:
+#   /opt/homebrew/bin/python3 -m venv ~/.venvs/applications
+#   ~/.venvs/applications/bin/pip install pyyaml pypdf
+
+VENV="$HOME/.venvs/applications/bin/python"
+if [ ! -x "$VENV" ]; then
+  echo "Missing venv at $VENV -- see the rebuild steps in this file." >&2
+  exit 1
+fi
+PYTHONUNBUFFERED=1 exec "$VENV" "$@"

@@ -1,0 +1,95 @@
+# Job hitlist configuration. Edit freely; every script reads this.
+
+searches:
+  keywords:
+    - Director Product Design
+    - Senior Director Product Design
+    - Director User Experience
+    - Senior Director User Experience
+    - Senior Manager Product Design
+    - Head of Product Design
+    - VP Product Design
+    - Director Design
+    # Principal / IC track (16 Sep 2026)
+    - Principal Product Designer
+    - Senior Principal Designer
+    - Staff Product Designer
+    - Senior Staff Product Designer
+    - Principal UX Designer
+    - Principal Design Technologist
+  locations:
+    - Seattle, Washington
+    - Los Angeles, California
+    - Orange County, California
+    - San Diego, California
+  # One extra pass over the whole US with the remote filter on.
+  remote_us: true
+  # r86400 = past 24h, r604800 = past week, r2592000 = past month
+  time_window: r604800
+  pages_per_search: 2          # 25 cards per page from the guest endpoint
+
+# Title tiers per track, matched case-insensitively against the job title.
+# director -- Jason, 13 Sep 2026: "director, senior director, senior manager
+#   are the strongest fits, with vp for smaller businesses."
+# ic -- Jason, 16 Sep 2026, after a recruiter said principal roles are the
+#   hard ones to fill: "principal designer, sr. principal, and sr. staff".
+tracks:
+  director:
+    label: Director path
+    tiers:
+      strong: { pattern: '\b(senior director|sr\.? director|director|senior manager|sr\.? manager)\b', score: 100 }
+      vp:     { pattern: '\b(vp|vice president|svp|evp)\b',  score: 80, note: 'VP: confirm company is small enough' }
+      head:   { pattern: '\b(head of|chief design)\b',        score: 75 }
+      other:  { pattern: '\b(manager|lead|principal)\b',     score: 40 }
+  ic:
+    label: Principal / IC path
+    # A management title never scores on this track, even if it says "principal".
+    exclude: '\b(director|manager|head of|vp|vice president|chief|design principal|product owner)\b'
+    tiers:
+      strong: { pattern: '\b(senior principal|sr\.? principal|principal|senior staff|sr\.? staff|distinguished)\b', score: 100 }
+      staff:  { pattern: '\bstaff\b',                          score: 90 }
+      lead:   { pattern: '\b(design lead|lead (product )?designer|lead ux)\b', score: 65 }
+      senior: { pattern: '\b(senior|sr\.?) (product |ux |experience )?designer\b', score: 35 }
+
+# The title must look like a design/UX role...
+design_signal: '\b(product design|ux|user experience|experience design|design)\b'
+# ...and must not be one of these neighbouring disciplines.
+design_exclude: '\b(engineer|engineering|industrial|mechanical|electrical|graphic|instructional|learning|hardware|game|sound|architect|architectural|interior|fashion|motion|packaging|apparel|jewelry|landscape|civil|structural|textile|textiles|apparel|semiconductor|silicon|asic|rtl|chip|data hall|data center|datacenter|methodology|circuit|analog|hvac|mep|store|retail store|visual merchandising|print|construction|design-? ?build|long span|bridge|highway|facilities|plumbing|laminate|flooring|resilient|tile|carpet|furniture|decor|home|kitchen|bath|event design|events|exhibit|lighting|floral|runway|aviation|airport|workplace design|urban|transit|rail|roadway|infrastructure|environmental|site design|aerostructure|aerostructures|airframe|structural design|mechanical design|hardware design|preconstruction|logic design|stacked|marketing operations|operational design|photonic|circuit|rtl|asic|verification|researcher|research scientist|package design|package)\b'
+
+locations:
+  # +20 if the job location matches. Seattle, LA, OC, SD per resume.yaml.
+  target: '\b(seattle|bellevue|redmond|kirkland|renton|bothell|washington|los angeles|santa monica|culver city|burbank|pasadena|irvine|orange county|costa mesa|newport beach|anaheim|san diego|carlsbad|la jolla)\b'
+  target_score: 20
+  remote_score: 15           # location or title literally says remote
+  remote_filter_score: 6     # only LinkedIn's remote filter says so; office city shown
+  # Anything else is excluded unless the posting is remote.
+  other_score: -100
+
+recency:                       # days since posted -> bonus. Steep on purpose.
+  - { max_days: 1,  score: 25 }
+  - { max_days: 3,  score: 18 }
+  - { max_days: 7,  score: 8 }
+  - { max_days: 14, score: -8 }
+  - { max_days: 999, score: -25 }
+few_applicants_score: 8        # "Be among the first 25 applicants"
+
+ai_signal: '\b(ai|artificial intelligence|agentic|agents?|llms?|machine learning|generative|copilot|conversational)\b'
+ai_score: 15                   # awarded when the description hits ai_signal 2+ times
+keywords_bonus:
+  - { pattern: '\bdesign system', score: 5 }
+  - { pattern: '\b(user research|ux research)', score: 3 }
+  - { pattern: '\b(b2b|enterprise|saas)\b', score: 3 }
+
+# Staffing agencies and aggregators repost other companies' roles. Kept, but
+# down-weighted and tagged, as the real employer is usually in the title.
+agency_pattern: '\b(jobot|jobgether|jack & jill|jack and jill|ladders|careerbuilder|robert half|aquent|creative circle|24 seven|vaco|randstad|kforce|insight global|apex systems|tek ?systems|cybercoders|motion recruitment|adecco|hays|michael page|the mom project|toptal|braintrust)\b'
+agency_score: -15
+
+bands:
+  strong: 120
+  good: 100
+  show_min: 80                 # rows under this are kept in data but not rendered
+
+fetch:
+  delay_seconds: 2.5
+  detail_min_tier_score: 40    # only fetch the full page for titles that clear a tier

@@ -1,0 +1,6 @@
+# Everything harvested or personal stays local. Only code and config are tracked.
+data/
+hitlist.html
+__pycache__/
+*.pyc
+.DS_Store

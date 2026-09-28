@@ -1,0 +1,140 @@
+# Companies whose ATS job board is polled directly every morning.
+# Direct boards beat every aggregator on freshness: a posting shows up here
+# the hour it goes live, before LinkedIn or Ladders index it.
+#
+# ats: greenhouse | lever | ashby   (all three have public JSON APIs)
+# slug: the company's board id, i.e. the path in
+#   boards.greenhouse.io/<slug>, jobs.lever.co/<slug>, jobs.ashbyhq.com/<slug>
+#
+# Add a company by finding its careers page URL and copying the slug. The
+# seed list below was auto-detected from companies already on the hitlist.
+boards:
+- company: Shield AI
+  ats: lever
+  slug: shieldai
+- company: SecurityScorecard
+  ats: greenhouse
+  slug: securityscorecard
+- company: Vuori
+  ats: greenhouse
+  slug: vuori
+- company: Figma
+  ats: greenhouse
+  slug: figma
+- company: AlphaSense
+  ats: greenhouse
+  slug: alphasense
+- company: McAfee
+  ats: greenhouse
+  slug: mcafee
+- company: Impiricus
+  ats: greenhouse
+  slug: impiricus
+- company: DEPT®
+  ats: greenhouse
+  slug: dept
+- company: Art of Problem Solving
+  ats: greenhouse
+  slug: artofproblemsolving
+- company: Smartsheet
+  ats: greenhouse
+  slug: smartsheet
+- company: Ramp
+  ats: ashby
+  slug: ramp
+- company: Help Scout
+  ats: ashby
+  slug: helpscout
+- company: Delinea
+  ats: ashby
+  slug: delinea
+- company: Azori
+  ats: greenhouse
+  slug: azori
+- company: Vanta
+  ats: ashby
+  slug: vanta
+- company: Algolia
+  ats: greenhouse
+  slug: algolia
+- company: Samsung Semiconductor
+  ats: greenhouse
+  slug: samsungsemiconductor
+- company: 1st Avenue Power
+  ats: greenhouse
+  slug: 1stavenuepower
+- company: Everpure
+  ats: greenhouse
+  slug: purestorage
+- company: IonQ
+  ats: greenhouse
+  slug: ionq
+- company: HubSpot
+  ats: greenhouse
+  slug: hubspotjobs
+- company: Olsson
+  ats: greenhouse
+  slug: olsson
+- company: Michels Corporation
+  ats: greenhouse
+  slug: michelscorporation
+- company: Amperesand
+  ats: greenhouse
+  slug: amperesand
+- company: SambaNova
+  ats: greenhouse
+  slug: sambanovasystems
+- company: Motive
+  ats: greenhouse
+  slug: gomotive
+- company: Rocket Lab Corporation
+  ats: greenhouse
+  slug: rocketlab
+- company: Edelman Financial Engines, LLC
+  ats: greenhouse
+  slug: edelmanfinancialenginesllc
+- company: SharkNinja
+  ats: greenhouse
+  slug: sharkninjaoperatingllc
+- company: Lightmatter
+  ats: greenhouse
+  slug: lightmatter
+- company: Verkada
+  ats: greenhouse
+  slug: verkada
+- company: OLIVER Agency - North America
+  ats: greenhouse
+  slug: oliverusa
+- company: FAM Brands
+  ats: greenhouse
+  slug: fambrands
+- company: Vast
+  ats: greenhouse
+  slug: vast
+- company: ID.me
+  ats: greenhouse
+  slug: idme
+- company: Mercury
+  ats: greenhouse
+  slug: mercury
+- company: SK hynix America
+  ats: greenhouse
+  slug: skhynixamerica
+- company: Pacific Fusion
+  ats: greenhouse
+  slug: pacificfusion
+- company: Mach Industries
+  ats: greenhouse
+  slug: machindustries
+- company: Thatch
+  ats: greenhouse
+  slug: thatch
+- company: Dataiku
+  ats: greenhouse
+  slug: dataiku
+- company: Upstart
+  ats: greenhouse
+  slug: upstart
+- company: Hubble Network
+  ats: greenhouse
+  slug: hubblenetwork
