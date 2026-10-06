@@ -135,14 +135,16 @@ out.append("""</table></div>
   // A decision can live under any id the group has ever had, or under the
   // group key. Resolve it to the current primary id so reposts keep marks.
   function keysOf(tr){ return (tr.dataset.ids||tr.dataset.id).split('|').concat([tr.dataset.g]); }
+  var migrated=false;
   document.querySelectorAll('tr[data-id]').forEach(function(tr){
     var id=tr.dataset.id;
-    if(!d[id]){ var k=keysOf(tr).find(function(k){ return d[k] && d[k].status; }); if(k) d[id]=d[k]; }
-    if(!d[id] && tr.dataset.s) d[id]={status:tr.dataset.s, at:''};
-    if(d[id] && tr.dataset.g && !d[tr.dataset.g]) d[tr.dataset.g]=d[id];
+    if(!d[id]){ var k=keysOf(tr).find(function(k){ return d[k] && d[k].status; }); if(k){ d[id]=d[k]; migrated=true; } }
+    if(!d[id] && tr.dataset.s){ d[id]={status:tr.dataset.s, at:''}; migrated=true; }
+    if(d[id] && tr.dataset.g && !d[tr.dataset.g]){ d[tr.dataset.g]=d[id]; migrated=true; }
   });
   var REMOTE = window.REMOTE || null;                       // hosted copy: presigned S3 URLs baked in by publish.py
   var SERVED = !!REMOTE || location.protocol==='http:';
+  if(migrated) setTimeout(function(){ save(); }, 0);
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){}
     if(REMOTE){ fetch(REMOTE.decisionsPut,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).catch(function(){}); }
     else if(SERVED){ fetch('/decisions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)}).catch(function(){}); } }
