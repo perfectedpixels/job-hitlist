@@ -121,6 +121,11 @@ for g in groups:
     keep, rest = g["rows"][0], g["rows"][1:]
     collapsed += len(rest)
     keep["all_ids"] = [x["id"] for x in g["rows"]]
+    # Stable key for decisions: company + title words, order-free. A reposted
+    # role gets a new LinkedIn id and may become the lead row, but this key
+    # stays the same, so a mark made on the old copy still applies.
+    kw = sorted(set(re.findall(r"[a-z0-9]+", g["t"])) - {"of", "the", "and", "for", "a"})
+    keep["gkey"] = g["c"] + "|" + " ".join(kw)
     keep["also_in"] = sorted({x.get("location") for x in rest} - {keep.get("location"), None})
     seen_on = []
     for x in g["rows"]:

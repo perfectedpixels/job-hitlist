@@ -92,10 +92,12 @@ for r in rows:
     rec = "<br>".join(f"<a href='{e(p.get('url'))}' target=_blank>{e(p.get('name'))}</a> <span class='co'>{e(p.get('title'))}</span>" for p in en.get("recruiters", []))
     rec += ("<br>" if rec else "") + f"<a href='{e(people_search(r.get('company')))}' target=_blank class='co'>search recruiters →</a>"
     if en.get("jobright"): tags.append("on Jobright")
-    st = decisions.get(r["id"], {}).get("status", "")
+    st = ""
+    for k in r.get("all_ids", [r["id"]]) + ["g:" + r.get("gkey", "")]:
+        if decisions.get(k, {}).get("status"): st = decisions[k]["status"]; break
     ts = r.get("track_scores", {})
     tattrs = " ".join(f"data-sc-{k}='{v}' data-b-{k}='{band_for(v)}' data-tier-{k}='{e(r.get('track_tier',{}).get(k,''))}'" for k, v in ts.items())
-    out.append(f"""<tr data-id='{e(r['id'])}' data-s='{e(st)}' data-days='{r['days'] if r['days'] is not None else 999}' {tattrs}><td><span class='band {r['band']}'>{r['score']}</span>
+    out.append(f"""<tr data-id='{e(r['id'])}' data-ids='{e("|".join(r.get("all_ids", [r["id"]])))}' data-g='{e("g:" + r.get("gkey", ""))}' data-s='{e(st)}' data-days='{r['days'] if r['days'] is not None else 999}' {tattrs}><td><span class='band {r['band']}'>{r['score']}</span>
 <div class='acts'><button class='b-applied' data-s='applied'>Applied</button><button class='b-follow' data-s='follow'>Follow up</button><button class='b-notfit' data-s='notfit'>Not a fit</button></div></td>
 <td class='title'><a href='{e(r['url'])}' target=_blank>{e(r['title'])}</a><br><span class='co'>{e(r['company'])} · {e(r['location'])}</span></td>
 <td>{posted}</td><td>{''.join(f"<span class='tag'>{t if t.startswith('<span') else e(t)}</span>" for t in tags)}</td>
@@ -130,9 +132,14 @@ out.append("""</table></div>
     document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t.dataset.t===track); });
   }
   var d={}; try{ d=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
-  // rows rendered with a status from data/decisions.json seed the store, browser wins
+  // A decision can live under any id the group has ever had, or under the
+  // group key. Resolve it to the current primary id so reposts keep marks.
+  function keysOf(tr){ return (tr.dataset.ids||tr.dataset.id).split('|').concat([tr.dataset.g]); }
   document.querySelectorAll('tr[data-id]').forEach(function(tr){
-    var id=tr.dataset.id; if(!d[id] && tr.dataset.s) d[id]={status:tr.dataset.s, at:''};
+    var id=tr.dataset.id;
+    if(!d[id]){ var k=keysOf(tr).find(function(k){ return d[k] && d[k].status; }); if(k) d[id]=d[k]; }
+    if(!d[id] && tr.dataset.s) d[id]={status:tr.dataset.s, at:''};
+    if(d[id] && tr.dataset.g && !d[tr.dataset.g]) d[tr.dataset.g]=d[id];
   });
   var REMOTE = window.REMOTE || null;                       // hosted copy: presigned S3 URLs baked in by publish.py
   var SERVED = !!REMOTE || location.protocol==='http:';
@@ -178,8 +185,9 @@ out.append("""</table></div>
   }
   document.addEventListener('click', function(ev){
     var b=ev.target.closest('.acts button'); if(b){
-      var tr=b.closest('tr'), id=tr.dataset.id, s=b.dataset.s;
-      if((d[id]||{}).status===s) delete d[id]; else d[id]={status:s, at:new Date().toISOString().slice(0,10)};
+      var tr=b.closest('tr'), id=tr.dataset.id, s=b.dataset.s, g=tr.dataset.g;
+      if((d[id]||{}).status===s){ delete d[id]; if(g) delete d[g]; }
+      else { var v={status:s, at:new Date().toISOString().slice(0,10)}; d[id]=v; if(g) d[g]=v; }
       save(); paint(); return;
     }
     var c=ev.target.closest('.chip[data-f]'); if(c){ view=c.dataset.f; paint(); return; }
