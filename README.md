@@ -38,3 +38,15 @@ Rows under 80 stay in data but are not rendered.
   and a click cannot overlap; `data/.running` is the lock).
 - Applied / Follow up / Not a fit marks are written to `data/decisions.json`
   on every click, and merged back on load. Use this URL, not the file path.
+
+## Setting this up for yourself
+
+Clone the repo, open it in Claude Code, and run `/hitlist-setup`. It asks for
+your search criteria and your resume, writes `config.yaml` and a private
+`resume.yaml`, builds the autofill userscript, and runs the first collection.
+Without Claude: `./run setup.py` (interactive), then copy
+`autofill/resume.template.yaml` to `resume.yaml`, fill it in, and run
+`./run autofill/build_userscript.py`.
+
+`resume.yaml`, `data/` and `hitlist.html` are gitignored. Apple Mail alerts
+and the launchd scheduler are macOS-only and optional.

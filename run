@@ -15,7 +15,8 @@
 
 VENV="$HOME/.venvs/applications/bin/python"
 if [ ! -x "$VENV" ]; then
-  echo "Missing venv at $VENV -- see the rebuild steps in this file." >&2
-  exit 1
+  echo "Creating venv at $HOME/.venvs/applications ..." >&2
+  PY=$(command -v python3.14 || command -v python3.13 || command -v python3.12 || command -v python3)
+  "$PY" -m venv "$HOME/.venvs/applications" && "$HOME/.venvs/applications/bin/pip" install -q pyyaml pypdf requests beautifulsoup4 boto3 || { echo "venv creation failed" >&2; exit 1; }
 fi
 PYTHONUNBUFFERED=1 exec "$VENV" "$@"

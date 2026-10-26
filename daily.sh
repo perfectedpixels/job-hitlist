@@ -1,7 +1,7 @@
 #!/bin/sh
 # One command to refresh the hitlist. Run from anywhere:
-#   ~/Dropbox/Documents/applications/jobsearch/daily.sh          # past week
-#   ~/Dropbox/Documents/applications/jobsearch/daily.sh r86400   # past 24h
+#   ./daily.sh          # past week
+#   ./daily.sh r86400   # past 24h
 #
 # Every step runs even if the one before it failed: a LinkedIn timeout must
 # not skip the Jobright harvest, and a Mail hiccup must not skip scoring.
@@ -18,7 +18,8 @@ echo "=== $(date '+%Y-%m-%d %H:%M') start (window ${1:-r604800}) ==="
 ./run boards.py                            || echo "!! boards failed"
 ./run greenhouse_search.py                 || echo "!! greenhouse_search failed"
 ./run careers.py                           || echo "!! careers failed"
-./run mail_alerts.py                       || echo "!! mail_alerts failed"
+if grep -qE "^\s*enabled:\s*false" config.yaml 2>/dev/null && grep -qE "^alerts:" config.yaml; then echo "alerts: disabled in config.yaml"; else
+./run mail_alerts.py                       || echo "!! mail_alerts failed"; fi
 ./run alerts_import.py                     || echo "!! alerts_import failed"
 ./run verify_alerts.py                     || echo "!! verify_alerts failed"
 ./run score.py                             || echo "!! score failed"

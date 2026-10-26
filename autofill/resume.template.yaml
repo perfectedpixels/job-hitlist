@@ -1,0 +1,94 @@
+# resume.yaml -- the single source of truth the autofill reads. PRIVATE: keep it
+# out of git (it is gitignored) and out of any shared folder.
+#
+# Two kinds of field:
+#   locked -- company, title, dates, location, employment type. Employment
+#             verification checks these. Never vary them per application.
+#   free   -- descriptions and bullets. Reword per role freely.
+#
+# Dates are YYYY-MM. `current: true` leaves `end` empty.
+
+meta:
+  updated: 2026-01-01
+  cv_source: ~/Documents/my-resume.docx
+
+contact:
+  legal_name: { first: First, last: Last, middle: "", preferred: First }
+  email: you@example.com
+  phone: "555.555.5555"
+  location: { city: City, state: ST, postal_code: "00000", country: United States }
+  address_line_1: 123 Main St
+  links:
+    portfolio: https://example.com
+    linkedin: https://www.linkedin.com/in/yourhandle/
+  work_authorization: { authorized_us: true, requires_sponsorship: false }
+
+work:
+  - id: current
+    company: Current Company
+    title: Your Title
+    employment_type: Full-time
+    location: { city: City, state: ST, country: United States }
+    start: 2022-01
+    end: null
+    current: true
+    description:
+      short: >-
+        One or two sentences for fields capped around 250 characters.
+      medium: >-
+        A paragraph for fields capped around 1000 characters. This is what
+        Workday's role description gets, followed by the bullets below.
+      long: null
+    bullets:
+      - A measurable result with a date and a delta.
+      - Another one.
+
+  - id: previous
+    company: Previous Company
+    title: Previous Title
+    employment_type: Full-time
+    location: { city: City, state: ST, country: United States }
+    start: 2018-06
+    end: 2021-12
+    current: false
+    description:
+      short: >-
+        ...
+      medium: >-
+        ...
+      long: null
+    bullets:
+      - ...
+
+education:
+  - institution: University Name
+    field_of_study: Field
+    degree: BA            # or null; preferred_form_value covers "some college"
+    degree_earned: true
+    attended_from: 2010
+    attended_to: 2014
+    preferred_form_value: Bachelor's
+    location: { city: City, state: ST, country: United States }
+
+skills:
+  tools: [Figma, ...]
+  practice: [...]
+
+application_answers:
+  headline: One-line professional headline.
+  summary_250: Two-sentence summary under 250 characters.
+  years_experience: 10
+  willing_to_relocate: false
+  location_preferences: [City, ST]
+  how_did_you_hear: LinkedIn
+  # Never autofilled, by design: EEO, gender, veteran, disability, DOB, SSN,
+  # passwords, account creation, consent checkboxes, Submit.
+
+# Optional second resume track (e.g. an IC track). Each item inherits the base
+# role with the same id and overrides only the keys given.
+# tracks:
+#   ic:
+#     label: Principal / IC path
+#     work:
+#       - id: current
+#         title: Principal Designer

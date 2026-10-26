@@ -4,3 +4,5 @@ hitlist.html
 __pycache__/
 *.pyc
 .DS_Store
+resume.yaml
+workday-autofill.user.js
